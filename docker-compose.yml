@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  ash:
+    image: ghcr.io/jamesfpate/ash:latest
+    container_name: ash
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+      - TZ=${TZ}
+    healthcheck:
+      test: ["CMD", "node", "-e", "const http = require('http'); const options = { host: 'localhost', port: 3000, timeout: 2000 }; const req = http.request(options, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on('error', () => process.exit(1)); req.end();"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      vlan-public:
+        ipv4_address: 192.168.20.30
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ash.rule=Host(`ash.${DOMAIN}`)"
+      - "traefik.http.routers.ash.entrypoints=https"
+      - "traefik.http.routers.ash.tls=true"
+      - "traefik.http.routers.ash.tls.certresolver=cloudflare"
+      - "traefik.http.routers.ash.middlewares=secHeaders@file"
+      - "traefik.http.services.ash.loadbalancer.server.port=3000"
+
+networks:
+  vlan-public:
+    external: true
+    name: br0
