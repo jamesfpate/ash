@@ -18,7 +18,9 @@ services:
       start_period: 40s
     networks:
       vlan-public:
-        ipv4_address: 192.168.20.30
+        ipv4_address: 192.168.20.25
+      vlan-private:
+        ipv4_address: 192.168.1.25
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ash.rule=Host(`ash.${DOMAIN}`)"
@@ -29,6 +31,8 @@ services:
       - "traefik.http.services.ash.loadbalancer.server.port=3000"
 
 networks:
-  vlan-public:
+  vlan-private:
     external: true
     name: br0
+  vlan-public:
+    external: true
