@@ -1,23 +1,29 @@
 # Multi-stage build for SvelteKit app with Node.js adapter
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Set working directory
 WORKDIR /app
 
 # Copy package files for dependency caching
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
-RUN npm ci --only=production=false
+RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY . .
 
 # Build the application
-RUN npm run build
+RUN pnpm run build
 
 # Production stage
-FROM node:22-alpine AS runner
+FROM node:24-alpine AS runner
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs
@@ -27,10 +33,10 @@ RUN adduser -S sveltekit -u 1001
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 
 # Install only production dependencies
-RUN npm ci --only=production && npm cache clean --force
+RUN pnpm install --prod --frozen-lockfile
 
 # Copy built application from builder stage
 COPY --from=builder --chown=sveltekit:nodejs /app/build ./build

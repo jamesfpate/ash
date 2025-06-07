@@ -4,24 +4,24 @@ tasks:
   dev:
     desc: Run the development server
     cmds:
-      - npm run dev
+      - pnpm run dev
 
   build:
     desc: Build the application
     cmds:
-      - npm run build
+      - pnpm run build
 
   preview:
     desc: Preview the production build
     cmds:
-      - npm run preview
+      - pnpm run preview
 
   check:
     desc: Run type checking
     cmds:
-      - npm run check
+      - pnpm run check
 
   install:
     desc: Install dependencies
     cmds:
-      - npm install
+      - pnpm install

@@ -56,6 +56,12 @@ npm run format
 npm run lint
 ```
 
+## Deployment
+- This app is deployed via GitHub Actions to Portainer
+- The Dockerfile uses a multi-stage build with Node.js 24
+- The production app runs as the `sveltekit` user (non-root) on port 3000
+- Start command in production: `node build`
+
 ## Architecture
 - `/src/routes/` - SvelteKit pages (game and settings)
 - `/src/lib/` - Shared components and utilities

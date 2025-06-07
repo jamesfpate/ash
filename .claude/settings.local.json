@@ -5,7 +5,17 @@
       "Bash(devbox run:*)",
       "Bash(mkdir:*)",
       "Bash(mv:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(node:*)",
+      "Bash(npm --version)",
+      "Bash(devbox shell:*)",
+      "Bash(rm:*)",
+      "Bash(npm install)",
+      "Bash(task dev)",
+      "Bash(corepack enable pnpm)",
+      "Bash(pnpm:*)",
+      "Bash(corepack pnpm install:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }
