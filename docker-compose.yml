@@ -24,11 +24,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ash.rule=Host(`ash.${DOMAIN}`)"
-      - "traefik.http.routers.ash.entrypoints=https"
+      - "traefik.http.routers.ash.entrypoints=websecure"
       - "traefik.http.routers.ash.tls=true"
-      - "traefik.http.routers.ash.tls.certresolver=cloudflare"
-      - "traefik.http.routers.ash.middlewares=secHeaders@file"
+      - "traefik.http.routers.ash.tls.certresolver=dns-cloudflare"
       - "traefik.http.services.ash.loadbalancer.server.port=3000"
+      - "traefik.http.services.ash.loadbalancer.passHostHeader=true"
+      - "traefik.http.services.ash.loadbalancer.server.scheme=http"
 
 networks:
   vlan-private:

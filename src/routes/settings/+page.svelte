@@ -110,7 +110,7 @@
       bind:value={newListWords}
       placeholder="Enter words/phrases (one per line)..."
       rows="5"
-    />
+    ></textarea>
     <button on:click={addNewList} class="primary">
       Add List
     </button>
@@ -150,7 +150,7 @@
               <textarea
                 bind:value={editingWords}
                 rows="5"
-              />
+              ></textarea>
               <div class="edit-actions">
                 <button on:click={saveEdit} class="primary">
                   Save
