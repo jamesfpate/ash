@@ -19,7 +19,7 @@ function createWordListsStore() {
             id: crypto.randomUUID(),
             name: defaultList.name,
             words: defaultList.words,
-            enabled: true,
+            enabled: defaultList.name === 'People',
             createdAt: Date.now(),
             updatedAt: Date.now()
           };

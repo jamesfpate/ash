@@ -3,8 +3,10 @@
   import { enabledWords } from '$lib/stores/wordLists';
   import { caseMode, applyCase } from '$lib/stores/caseSettings';
   import { getRandomSuccessMessage } from '$lib/defaultLists';
+  import { playRandomSuccessSound, initializeSounds } from '$lib/sounds';
 
   let currentWord = '';
+  let previousWord = '';
   let userInput = '';
   let showSuccess = false;
   let inputElement: HTMLInputElement;
@@ -19,8 +21,27 @@
       currentWord = '';
       return;
     }
-    const randomIndex = Math.floor(Math.random() * $enabledWords.length);
-    currentWord = $enabledWords[randomIndex];
+    
+    // If there's only one word, we have to use it
+    if ($enabledWords.length === 1) {
+      previousWord = currentWord;
+      currentWord = $enabledWords[0];
+      userInput = '';
+      setTimeout(() => ensureFocus(), 0);
+      return;
+    }
+    
+    // Keep selecting until we get a different word
+    let newWord = currentWord;
+    let attempts = 0;
+    while (newWord === currentWord && attempts < 10) {
+      const randomIndex = Math.floor(Math.random() * $enabledWords.length);
+      newWord = $enabledWords[randomIndex];
+      attempts++;
+    }
+    
+    previousWord = currentWord;
+    currentWord = newWord;
     userInput = '';
     // Ensure focus after word change
     setTimeout(() => ensureFocus(), 0);
@@ -33,6 +54,7 @@
     if (normalizedInput === normalizedTarget) {
       successMessage = getRandomSuccessMessage();
       showSuccess = true;
+      playRandomSuccessSound();
       setTimeout(() => {
         showSuccess = false;
         selectRandomWord();
@@ -71,6 +93,7 @@
 
   onMount(() => {
     ensureFocus();
+    initializeSounds();
     
     // Re-focus when window regains focus
     const handleWindowFocus = () => ensureFocus();
