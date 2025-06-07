@@ -103,7 +103,7 @@
         bind:this={inputElement}
         bind:value={userInput}
         on:input={handleInput}
-        placeholder="Type the word here..."
+        placeholder=""
         disabled={showSuccess}
       />
     </div>
