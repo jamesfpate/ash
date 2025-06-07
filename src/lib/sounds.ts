@@ -1,18 +1,19 @@
-// Use Vite's glob import to automatically load all MP3 files from the sounds directory
-// We need to use a relative path from src/lib
-const soundModules = import.meta.glob('../../static/sounds/*.mp3', { 
-  eager: true,
-  query: '?url',
-  import: 'default'
-});
-
-// The URLs are already properly transformed by Vite for both dev and production
-const soundUrls: string[] = Object.values(soundModules) as string[];
+// Manual list of sound files in /static/sounds/
+// Add your sound filenames here when you add MP3 files to the sounds folder
+const soundFiles = [
+  'bonus.mp3',
+  'bright.mp3',
+  'complete.mp3',
+  'game-bonus.mp3',
+  'success.mp3',
+  'yay.mp3'
+  // Add more filenames here as needed
+];
 
 let audio: HTMLAudioElement | null = null;
 
 export function playRandomSuccessSound() {
-  if (soundUrls.length === 0) {
+  if (soundFiles.length === 0) {
     console.log('No sound files available. Add MP3 files to /static/sounds/');
     return;
   }
@@ -23,12 +24,12 @@ export function playRandomSuccessSound() {
     audio.currentTime = 0;
   }
 
-  // Select a random sound URL
-  const randomIndex = Math.floor(Math.random() * soundUrls.length);
-  const soundUrl = soundUrls[randomIndex];
+  // Select a random sound file
+  const randomIndex = Math.floor(Math.random() * soundFiles.length);
+  const soundFile = soundFiles[randomIndex];
 
   // Create and play the audio
-  audio = new Audio(soundUrl);
+  audio = new Audio(`/sounds/${soundFile}`);
   audio.volume = 0.5; // Set volume to 50% by default
   
   audio.play().catch(error => {
@@ -36,7 +37,6 @@ export function playRandomSuccessSound() {
   });
 }
 
-// No need for manual initialization anymore - sounds are loaded automatically
 export function initializeSounds() {
-  console.log(`Loaded ${soundUrls.length} sound files`);
+  console.log(`Loaded ${soundFiles.length} sound files`);
 }
