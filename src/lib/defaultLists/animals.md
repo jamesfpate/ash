@@ -18,5 +18,5 @@ frog
 bear
 lion
 tiger
-elephant
 monkey
+owl

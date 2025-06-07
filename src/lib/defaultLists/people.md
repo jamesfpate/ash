@@ -6,3 +6,6 @@ baba
 moji
 pop
 nana
+amelia
+emily
+mamu
