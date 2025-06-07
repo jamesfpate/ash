@@ -9,3 +9,5 @@ nana
 amelia
 emily
 mamu
+david
+daniel
