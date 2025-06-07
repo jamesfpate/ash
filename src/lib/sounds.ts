@@ -6,13 +6,8 @@ const soundModules = import.meta.glob('../../static/sounds/*.mp3', {
   import: 'default'
 });
 
-// Extract the URLs from the glob import and fix the paths
-// Vite returns full paths, but we need to serve them from the root
-const soundUrls: string[] = Object.values(soundModules).map(url => {
-  // Extract just the filename from the full path
-  const filename = url.split('/').pop();
-  return `/sounds/${filename}`;
-});
+// The URLs are already properly transformed by Vite for both dev and production
+const soundUrls: string[] = Object.values(soundModules) as string[];
 
 let audio: HTMLAudioElement | null = null;
 
