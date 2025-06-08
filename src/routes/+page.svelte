@@ -4,7 +4,7 @@
   import { caseMode, applyCase } from '$lib/stores/caseSettings';
   import { keyboardSettings } from '$lib/stores/keyboardSettings';
   import { getRandomSuccessMessage } from '$lib/defaultLists';
-  import { playRandomSuccessSound, initializeSounds } from '$lib/sounds';
+  import { playRandomSuccessSound, playChimeSound, initializeSounds } from '$lib/sounds';
 
   let currentWord = '';
   let previousWord = '';
@@ -68,28 +68,35 @@
   }
 
   function handleKeyPress(event: KeyboardEvent) {
+    const char = event.key;
+    
+    // Allow special keys (backspace, delete, arrow keys, etc.)
+    if (char.length > 1) {
+      return;
+    }
+    
+    // Check if we've reached the end of the word
+    if (userInput.length >= currentWord.length) {
+      if ($keyboardSettings.restrictToCorrectLetter) {
+        event.preventDefault();
+      }
+      return;
+    }
+    
+    const expectedChar = currentWord[userInput.length];
+    
+    // Check if the typed character is correct (case-insensitive)
+    const isCorrect = char.toLowerCase() === expectedChar.toLowerCase();
+    
+    if (isCorrect) {
+      // Play chime sound for correct letter
+      playChimeSound();
+    }
+    
     // If restriction is enabled, prevent incorrect characters from being typed
-    if ($keyboardSettings.restrictToCorrectLetter) {
-      const char = event.key;
-      
-      // Allow special keys (backspace, delete, arrow keys, etc.)
-      if (char.length > 1) {
-        return;
-      }
-      
-      // Check if we've reached the end of the word
-      if (userInput.length >= currentWord.length) {
-        event.preventDefault();
-        return;
-      }
-      
-      const expectedChar = currentWord[userInput.length];
-      
-      // Compare case-insensitively
-      if (char.toLowerCase() !== expectedChar.toLowerCase()) {
-        event.preventDefault();
-        return;
-      }
+    if ($keyboardSettings.restrictToCorrectLetter && !isCorrect) {
+      event.preventDefault();
+      return;
     }
   }
 

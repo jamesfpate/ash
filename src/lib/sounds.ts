@@ -3,6 +3,7 @@
 const soundFiles = [
   'bonus.mp3',
   'bright.mp3',
+  'chime.mp3',
   'complete.mp3',
   'game-bonus.mp3',
   'success.mp3',
@@ -11,6 +12,17 @@ const soundFiles = [
 ];
 
 let audio: HTMLAudioElement | null = null;
+let chimeAudio: HTMLAudioElement | null = null;
+
+export function playChimeSound() {
+  // Create a new audio instance each time to allow overlapping sounds
+  const chime = new Audio('/sounds/chime.mp3');
+  chime.volume = 0.3; // Lower volume for typing sounds
+  
+  chime.play().catch(error => {
+    console.error('Error playing chime sound:', error);
+  });
+}
 
 export function playRandomSuccessSound() {
   if (soundFiles.length === 0) {
