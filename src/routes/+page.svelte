@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { enabledWords } from '$lib/stores/wordLists';
   import { caseMode, applyCase } from '$lib/stores/caseSettings';
+  import { keyboardSettings } from '$lib/stores/keyboardSettings';
   import { getRandomSuccessMessage } from '$lib/defaultLists';
   import { playRandomSuccessSound, initializeSounds } from '$lib/sounds';
 
@@ -48,8 +49,12 @@
   }
 
   function checkAnswer() {
-    const normalizedInput = userInput.trim().toLowerCase();
-    const normalizedTarget = currentWord.trim().toLowerCase();
+    const trimmedInput = userInput.trim();
+    const trimmedTarget = currentWord.trim();
+    
+    // Compare case-insensitively since the case mode is just for display/input
+    const normalizedInput = trimmedInput.toLowerCase();
+    const normalizedTarget = trimmedTarget.toLowerCase();
     
     if (normalizedInput === normalizedTarget) {
       successMessage = getRandomSuccessMessage();
@@ -62,20 +67,46 @@
     }
   }
 
+  function handleKeyPress(event: KeyboardEvent) {
+    // If restriction is enabled, prevent incorrect characters from being typed
+    if ($keyboardSettings.restrictToCorrectLetter) {
+      const char = event.key;
+      
+      // Allow special keys (backspace, delete, arrow keys, etc.)
+      if (char.length > 1) {
+        return;
+      }
+      
+      // Check if we've reached the end of the word
+      if (userInput.length >= currentWord.length) {
+        event.preventDefault();
+        return;
+      }
+      
+      const expectedChar = currentWord[userInput.length];
+      
+      // Compare case-insensitively
+      if (char.toLowerCase() !== expectedChar.toLowerCase()) {
+        event.preventDefault();
+        return;
+      }
+    }
+  }
+
   function handleInput(event: Event) {
     const target = event.target as HTMLInputElement;
-    const rawValue = target.value;
+    let newValue = target.value;
     
-    // Apply case transformation if needed
+    // Apply case transformation
     if ($caseMode === 'uppercase') {
-      userInput = rawValue.toUpperCase();
-      target.value = userInput;
+      newValue = newValue.toUpperCase();
     } else if ($caseMode === 'lowercase') {
-      userInput = rawValue.toLowerCase();
-      target.value = userInput;
-    } else {
-      userInput = rawValue;
+      newValue = newValue.toLowerCase();
     }
+    
+    // Update the input value
+    userInput = newValue;
+    target.value = userInput;
     
     checkAnswer();
   }
@@ -126,6 +157,7 @@
         bind:this={inputElement}
         bind:value={userInput}
         on:input={handleInput}
+        on:keypress={handleKeyPress}
         placeholder=""
         disabled={showSuccess}
       />

@@ -3,6 +3,7 @@
   import type { WordList } from '$lib/types';
   import { caseMode } from '$lib/stores/caseSettings';
   import type { CaseMode } from '$lib/stores/caseSettings';
+  import { keyboardSettings } from '$lib/stores/keyboardSettings';
 
   let newListName = '';
   let newListWords = '';
@@ -99,6 +100,23 @@
     </div>
   </div>
 
+  <div class="keyboard-settings">
+    <h2>Keyboard Settings</h2>
+    <label class="checkbox-label">
+      <input
+        type="checkbox"
+        checked={$keyboardSettings.restrictToCorrectLetter}
+        on:change={(e) => {
+          $keyboardSettings = {
+            ...$keyboardSettings,
+            restrictToCorrectLetter: e.currentTarget.checked
+          };
+        }}
+      />
+      <span>Only allow typing the correct next letter</span>
+    </label>
+  </div>
+
   <div class="new-list-form">
     <h2>Create New List</h2>
     <input
@@ -185,7 +203,7 @@
     margin-bottom: 2rem;
   }
 
-  .case-settings {
+  .case-settings, .keyboard-settings {
     background-color: white;
     padding: 2rem;
     border-radius: 0.5rem;
