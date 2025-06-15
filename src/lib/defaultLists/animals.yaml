@@ -1,0 +1,24 @@
+name: Animals
+words:
+  - text: cat
+    imageUrl: /images/animals-cat.jpg
+  - text: dog
+    imageUrl: /images/animals-dog.jpg
+  - bird
+  - fish
+  - mouse
+  - cow
+  - pig
+  - horse
+  - sheep
+  - goat
+  - chicken
+  - duck
+  - rabbit
+  - snake
+  - frog
+  - bear
+  - lion
+  - tiger
+  - monkey
+  - owl

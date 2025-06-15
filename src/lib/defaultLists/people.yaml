@@ -1,0 +1,16 @@
+name: People
+words:
+  - text: ash
+    imageUrl: /images/people-ash.jpg
+  - text: dada
+    imageUrl: /images/people-dada.jpg
+  - text: mama
+    imageUrl: /images/people-mama.jpg
+  - text: baba
+    imageUrl: /images/people-baba.jpg
+  - text: moji
+    imageUrl: /images/people-moji.jpg
+  - text: pop
+    imageUrl: /images/people-pop.jpg
+  - text: nana
+    imageUrl: /images/people-nana.jpg

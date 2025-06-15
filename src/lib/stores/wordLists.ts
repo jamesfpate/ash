@@ -1,5 +1,5 @@
 import { writable, derived } from 'svelte/store';
-import type { WordList } from '$lib/types';
+import type { WordList, WordWithImage } from '$lib/types';
 import { getAllWordLists, saveWordList, deleteWordList as deleteFromDB } from '$lib/storage/db';
 import { getAllDefaultLists } from '$lib/defaultLists';
 
@@ -30,7 +30,7 @@ function createWordListsStore() {
       
       set(lists);
     },
-    async add(name: string, words: string[]) {
+    async add(name: string, words: (string | WordWithImage)[]) {
       const newList: WordList = {
         id: crypto.randomUUID(),
         name,
@@ -72,5 +72,15 @@ export const wordLists = createWordListsStore();
 export const enabledWords = derived(wordLists, ($wordLists) => {
   const enabledLists = $wordLists.filter(list => list.enabled);
   const allWords = enabledLists.flatMap(list => list.words);
-  return [...new Set(allWords)];
+  
+  // Remove duplicates based on the text content
+  const uniqueWords = new Map<string, string | WordWithImage>();
+  allWords.forEach(word => {
+    const text = typeof word === 'string' ? word : word.text;
+    if (!uniqueWords.has(text)) {
+      uniqueWords.set(text, word);
+    }
+  });
+  
+  return Array.from(uniqueWords.values());
 });

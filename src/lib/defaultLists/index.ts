@@ -1,43 +1,52 @@
-// Import markdown files as raw text
-import peopleList from './people.md?raw';
-import numbersList from './numbers.md?raw';
-import animalsList from './animals.md?raw';
-import vehiclesList from './vehicles.md?raw';
-import successMessagesList from './successMessages.md?raw';
+// Import YAML files as raw text
+import peopleYaml from './people.yaml?raw';
+import numbersYaml from './numbers.yaml?raw';
+import animalsYaml from './animals.yaml?raw';
+import vehiclesYaml from './vehicles.yaml?raw';
+import successMessagesYaml from './successMessages.yaml?raw';
+import yaml from 'js-yaml';
+import type { WordWithImage } from '$lib/types';
 
-export interface DefaultList {
+interface YamlWordList {
   name: string;
-  content: string;
+  words: (string | { text: string; imageUrl?: string })[];
 }
 
-function parseMarkdownList(content: string): string[] {
-  return content
-    .split('\n')
-    .filter(line => line.trim() && !line.startsWith('#'))
-    .map(line => line.trim());
+interface YamlSuccessMessages {
+  name: string;
+  messages: string[];
 }
 
-export const defaultLists: DefaultList[] = [
-  { name: 'People', content: peopleList },
-  { name: 'Numbers', content: numbersList },
-  { name: 'Animals', content: animalsList },
-  { name: 'Vehicles', content: vehiclesList }
-];
-
-export function getDefaultListWords(listName: string): string[] {
-  const list = defaultLists.find(l => l.name === listName);
-  return list ? parseMarkdownList(list.content) : [];
+function parseYamlWordList(yamlContent: string): (string | WordWithImage)[] {
+  const data = yaml.load(yamlContent) as YamlWordList;
+  return data.words.map(word => {
+    if (typeof word === 'string') {
+      return word;
+    }
+    return {
+      text: word.text,
+      imageUrl: word.imageUrl
+    } as WordWithImage;
+  });
 }
 
-export function getAllDefaultLists(): { name: string; words: string[] }[] {
-  return defaultLists.map(list => ({
-    name: list.name,
-    words: parseMarkdownList(list.content)
-  }));
+const peopleList = parseYamlWordList(peopleYaml);
+const numbersList = parseYamlWordList(numbersYaml);
+const animalsList = parseYamlWordList(animalsYaml);
+const vehiclesList = parseYamlWordList(vehiclesYaml);
+
+export function getAllDefaultLists(): { name: string; words: (string | WordWithImage)[] }[] {
+  return [
+    { name: 'People', words: peopleList },
+    { name: 'Numbers', words: numbersList },
+    { name: 'Animals', words: animalsList },
+    { name: 'Vehicles', words: vehiclesList }
+  ];
 }
 
 export function getSuccessMessages(): string[] {
-  return parseMarkdownList(successMessagesList);
+  const data = yaml.load(successMessagesYaml) as YamlSuccessMessages;
+  return data.messages;
 }
 
 export function getRandomSuccessMessage(): string {

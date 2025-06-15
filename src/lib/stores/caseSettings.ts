@@ -8,7 +8,7 @@ const STORAGE_KEY = 'wordgame-case-mode';
 function createCaseSettingsStore() {
   // Load from localStorage if available
   const stored = browser ? localStorage.getItem(STORAGE_KEY) : null;
-  const initialValue: CaseMode = (stored as CaseMode) || 'default';
+  const initialValue: CaseMode = (stored as CaseMode) || 'uppercase';
   
   const { subscribe, set, update } = writable<CaseMode>(initialValue);
 
